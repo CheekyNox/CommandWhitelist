@@ -30,3 +30,9 @@ precisely what commands players can see and use.
 Having some issues? Make sure to check out <a href="https://github.com/YouHaveTrouble/CommandWhitelist/wiki">Plugin Wiki</a>.
 
 Found a bug or you think plugin is missing an important feature? <a href="https://github.com/YouHaveTrouble/CommandWhitelist/issues">Create an issue</a>.
+
+For Bukkit packet filtering, install PacketEvents 2.11.1 or newer and set
+`use_packetevents: true` in `plugins/CommandWhitelist/config.yml`, then restart.
+Existing `use_protocollib` values are used as the initial default for the new key.
+Without PacketEvents or when disabled, the Bukkit event filter is used.
+Packet filtering covers legacy chat commands and modern signed/unsigned commands.

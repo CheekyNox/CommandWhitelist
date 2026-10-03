@@ -69,6 +69,10 @@
 
     <repositories>
         <repository>
+            <id>codemc</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
@@ -108,9 +112,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.dmulloy2</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>5.4.0</version>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-spigot</artifactId>
+            <version>2.11.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

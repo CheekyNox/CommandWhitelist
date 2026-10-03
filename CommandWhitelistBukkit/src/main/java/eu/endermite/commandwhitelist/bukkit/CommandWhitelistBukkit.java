@@ -5,7 +5,7 @@ import eu.endermite.commandwhitelist.bukkit.listeners.AsyncTabCompleteBlockerLis
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
-import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandPreProcessListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.packetevents.PacketCommandPreProcessListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
@@ -31,6 +31,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
     private static CommandWhitelistBukkit commandWhitelist;
     private static ConfigCache configCache;
     private static BukkitAudiences audiences;
+    private PacketCommandPreProcessListener packetListener;
 
     @Override
     public void onEnable() {
@@ -40,14 +41,18 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         reloadPluginConfig();
 
-        Plugin protocollib = getServer().getPluginManager().getPlugin("ProtocolLib");
+        Plugin packetEvents = getServer().getPluginManager().getPlugin("packetevents");
 
-        if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
+        if (!getConfigCache().usePacketEvents || packetEvents == null || !packetEvents.isEnabled()) {
+            if (getConfigCache().usePacketEvents) {
+                getLogger().warning("PacketEvents is unavailable; using Bukkit command filter.");
+            }
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
         } else {
-            PacketCommandPreProcessListener.protocol(this);
-            getLogger().warning("Using ProtocolLib for command filter!");
-            getLogger().warning("Please make sure you actually need this. This is not a \"better way to do it\".");
+            packetListener = new PacketCommandPreProcessListener();
+            packetListener.register();
+            getLogger().info("Using PacketEvents for command filter!");
+
         }
         try {
             // Use paper's async tab completions if possible
@@ -66,6 +71,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         }
 
         new Metrics(this, 8705);
+    }
+
+    @Override
+    public void onDisable() {
+        if (packetListener != null) packetListener.unregister();
+        if (audiences != null) audiences.close();
     }
 
     private void reloadPluginConfig() {

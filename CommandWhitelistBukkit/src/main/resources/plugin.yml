@@ -7,7 +7,7 @@ authors: [YouHaveTrouble]
 website: youhavetrouble.me
 folia-supported: true
 softdepend:
-  - ProtocolLib
+  - packetevents
 description: Control what commands players can use
 commands:
   commandwhitelist:
